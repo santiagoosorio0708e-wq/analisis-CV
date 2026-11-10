@@ -1,0 +1,32 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1301 >>
+stream
+BT /F1 12 Tf 50 750 Td (CURRICULUM VITAE - Carlos Mendoza) Tj 0 -18 Td (Email: carlos.mendoza@email.com | Bogota, Colombia) Tj 0 -18 Td () Tj 0 -18 Td (PERFIL PROFESIONAL) Tj 0 -18 Td (Ingeniero de Sistemas con mas de 4 anos de experiencia en desarrollo backend con Python.) Tj 0 -18 Td (Especializado en arquitectura de microservicios, APIs RESTful y optimizacion de bases de datos.) Tj 0 -18 Td () Tj 0 -18 Td (EXPERIENCIA LABORAL) Tj 0 -18 Td (1. Desarrollador Backend Senior - Tech Solutions (2022 - Presente, 2 anos)) Tj 0 -18 Td (   - Diseno e implementacion de APIs REST con Python, FastAPI y PostgreSQL.) Tj 0 -18 Td (   - Automatizacion de pruebas con pytest y despliegues con Docker.) Tj 0 -18 Td (2. Desarrollador Python - Cloud Services (2020 - 2022, 2 anos)) Tj 0 -18 Td (   - Desarrollo de endpoints y procesamiento de datos en PostgreSQL.) Tj 0 -18 Td (   - Integracion de servicios externos y control de versiones con Git.) Tj 0 -18 Td () Tj 0 -18 Td (EDUCACION Y CERTIFICACIONES) Tj 0 -18 Td (- Grado en Ingenieria de Sistemas - Universidad Nacional (2015 - 2020)) Tj 0 -18 Td (- Certificacion Profesional en Python y Git) Tj 0 -18 Td () Tj 0 -18 Td (HABILIDADES TECNICAS) Tj 0 -18 Td (- Python, FastAPI, Django, APIs REST, SQL, PostgreSQL, Docker, Git, Pytest, CI/CD.) Tj 0 -18 Td ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1664
+%%EOF
