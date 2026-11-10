@@ -66,6 +66,14 @@ def test_excepcion_de_api_se_convierte_en_error_seguro():
         evaluar_candidato("CV", "Vacante", evaluador=simulado)
 
 
+def test_saturacion_temporal_de_gemini_tiene_mensaje_especifico():
+    simulado = EvaluadorSimulado(
+        error=RuntimeError("503 UNAVAILABLE: model is experiencing high demand")
+    )
+    with pytest.raises(ErrorEvaluacionCV, match="temporalmente saturado"):
+        evaluar_candidato("CV", "Vacante", evaluador=simulado)
+
+
 def test_exportacion_json_incluye_clasificacion_y_recomendacion():
     contenido = crear_json_analisis(analisis_valido())
     assert '"clasificacion": "Excelente"' in contenido

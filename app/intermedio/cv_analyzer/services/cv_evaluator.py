@@ -32,7 +32,9 @@ def crear_evaluador_cv(
     modelo = ChatGoogleGenerativeAI(
         model=config.model,
         api_key=config.api_key,
-        max_retries=1,
+        # One retry after the initial request handles brief Gemini 503 spikes
+        # without creating an unbounded loop or consuming quota unnecessarily.
+        max_retries=2,
         timeout=60,
     )
     estructurado = modelo.with_structured_output(
@@ -46,6 +48,11 @@ def _mensaje_error_gemini(exc: Exception) -> str:
     nombre = type(exc).__name__.lower()
     mensaje = str(exc).lower()
     detalle = f"{nombre} {mensaje}"
+    if any(valor in detalle for valor in ("high demand", "unavailable", "503")):
+        return (
+            "Gemini 3.5 Flash está temporalmente saturado (503). "
+            "Espera unos segundos y vuelve a analizar."
+        )
     if any(valor in detalle for valor in ("authentication", "unauthenticated", "api key")):
         return "La clave de Gemini no es válida. Revisa GEMINI_API_KEY."
     if any(valor in detalle for valor in ("permission", "forbidden")):
@@ -56,7 +63,7 @@ def _mensaje_error_gemini(exc: Exception) -> str:
         return "Gemini alcanzó un límite de solicitudes o cuota. Inténtalo más tarde."
     if any(valor in detalle for valor in ("timeout", "deadline")):
         return "Gemini tardó demasiado en responder. Inténtalo nuevamente."
-    if any(valor in detalle for valor in ("connection", "network", "unavailable", "503")):
+    if any(valor in detalle for valor in ("connection", "network")):
         return "No fue posible conectar con Gemini. Revisa la conexión e inténtalo de nuevo."
     return "Gemini no pudo completar el análisis. Inténtalo nuevamente más tarde."
 
