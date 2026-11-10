@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+from pathlib import Path
 
 import streamlit as st
 
@@ -19,6 +20,7 @@ from ui.presentation import (
 
 
 logger = logging.getLogger(__name__)
+RUTA_ESTILOS = Path(__file__).with_name("styles.css")
 
 
 def inicializar_estado() -> None:
@@ -135,6 +137,10 @@ def _procesar_analisis(archivo: object, descripcion: str) -> None:
 def main() -> None:
     """Configure and run the complete CV Analyzer interface."""
     st.set_page_config(page_title="CV Analyzer", page_icon="📄", layout="wide")
+    st.markdown(
+        f"<style>{RUTA_ESTILOS.read_text(encoding='utf-8')}</style>",
+        unsafe_allow_html=True,
+    )
     inicializar_estado()
 
     titulo, acciones = st.columns([4, 1])
