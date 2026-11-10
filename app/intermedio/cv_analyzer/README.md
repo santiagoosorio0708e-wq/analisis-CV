@@ -11,6 +11,7 @@ porcentaje orientativo, una clasificación y una recomendación para revisión h
 - Evaluación exclusiva con Google Gemini y salida nativa JSON Schema.
 - Criterios fijos: experiencia 40 %, habilidades 35 %, formación 15 % y coherencia 10 %.
 - Estado persistente durante la sesión, limpieza explícita y prevención de duplicados.
+- Ejemplo reutilizable de vacante y descarga del análisis en formato JSON.
 - Errores comprensibles sin puntuaciones ficticias ni exposición de secretos.
 - Interfaz adaptable, contenedor no-root y healthcheck de Streamlit.
 
@@ -119,7 +120,8 @@ independientes. La puntuación no reemplaza una decisión humana de contratació
 
 - El texto del CV y la vacante se envían a Google Gemini durante el análisis.
 - La aplicación no persiste CV ni resultados y no registra el contenido completo.
-- No se implementa OCR, lotes, base de datos ni almacenamiento del botón Guardar.
+- No se implementa OCR, procesamiento por lotes ni base de datos; Guardar descarga un
+  JSON local, pero no persiste información en el servidor.
 - Los resultados generativos pueden variar y deben revisarse por una persona.
 - La evaluación excluye atributos personales irrelevantes y se limita a pertinencia
   profesional.

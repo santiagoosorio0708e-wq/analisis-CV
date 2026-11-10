@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import logging
 from pathlib import Path
 
@@ -19,6 +20,13 @@ from ui.presentation import (
 
 logger = logging.getLogger(__name__)
 RUTA_ESTILOS = Path(__file__).with_name("styles.css")
+EJEMPLO_VACANTE = """Puesto: Desarrollador/a Python Backend
+Experiencia requerida: 3 años desarrollando aplicaciones y servicios en Python.
+Habilidades obligatorias: Python, APIs REST, SQL, PostgreSQL, Git y pruebas automatizadas.
+Habilidades deseables: Docker, Streamlit, LangChain, Google Gemini y CI/CD.
+Formación académica: Ingeniería de Sistemas, Software o experiencia equivalente.
+Responsabilidades: diseñar servicios mantenibles, integrar APIs, revisar código,
+documentar soluciones y asegurar la calidad mediante pruebas automatizadas."""
 
 
 def inicializar_estado() -> None:
@@ -30,12 +38,32 @@ def inicializar_estado() -> None:
 
 
 def limpiar_analisis() -> None:
-    """Reset inputs and result explicitly; a new uploader key clears its file."""
+    """Reset inputs and result using fresh widget keys for a reliable clean form."""
+    version_actual = st.session_state.uploader_version
     st.session_state.analysis_result = None
     st.session_state.last_fingerprint = None
     st.session_state.analyzing = False
-    st.session_state.uploader_version += 1
+    st.session_state.uploader_version = version_actual + 1
     st.session_state.pop("job_description", None)
+    st.session_state.pop(f"job_description_{version_actual}", None)
+
+
+def cargar_ejemplo_vacante() -> None:
+    """Populate the current description widget without triggering an analysis."""
+    clave = f"job_description_{st.session_state.uploader_version}"
+    st.session_state[clave] = EJEMPLO_VACANTE
+
+
+def crear_json_analisis(resultado: AnalisisCV) -> str:
+    """Serialize the visible analysis and deterministic labels for download."""
+    datos = resultado.model_dump(mode="json")
+    datos["clasificacion"] = clasificar_ajuste(resultado.porcentaje_ajuste)
+    datos["recomendacion"] = obtener_recomendacion(resultado.porcentaje_ajuste)
+    datos["aviso"] = (
+        "Resultado orientativo para revisión humana; no constituye una decisión "
+        "automática de contratación."
+    )
+    return json.dumps(datos, ensure_ascii=False, indent=2)
 
 
 def _huella(contenido: bytes, descripcion: str) -> str:
@@ -88,8 +116,22 @@ def mostrar_resultado(resultado: AnalisisCV) -> None:
         f"{recomendacion}. Esta puntuación es orientativa y apoya la revisión humana; "
         "no constituye una decisión automática de contratación."
     )
-    if st.button("Guardar análisis", use_container_width=True):
-        st.info("Guardar análisis es una funcionalidad prevista para una versión futura.")
+    guardar, limpiar = st.columns(2)
+    with guardar:
+        st.download_button(
+            "Guardar análisis en JSON",
+            data=crear_json_analisis(resultado),
+            file_name="analisis_cv.json",
+            mime="application/json",
+            use_container_width=True,
+        )
+    with limpiar:
+        st.button(
+            "Limpiar análisis",
+            key="clear_after_result",
+            on_click=limpiar_analisis,
+            use_container_width=True,
+        )
 
 
 def _procesar_analisis(archivo: object, descripcion: str) -> None:
@@ -140,10 +182,17 @@ def main() -> None:
     inicializar_estado()
     limite_archivo_mb = obtener_limite_archivo_mb()
 
-    titulo, acciones = st.columns([4, 1])
+    titulo, ejemplo, acciones = st.columns([3.5, 1.2, 1])
     with titulo:
         st.title("CV Analyzer")
         st.write("Compara un currículum con una vacante mediante Google Gemini.")
+    with ejemplo:
+        st.button(
+            "Usar ejemplo",
+            on_click=cargar_ejemplo_vacante,
+            use_container_width=True,
+            disabled=st.session_state.analyzing,
+        )
     with acciones:
         st.button(
             "Limpiar",
@@ -174,7 +223,7 @@ def main() -> None:
         )
         descripcion = st.text_area(
             "Descripción de la vacante",
-            key="job_description",
+            key=f"job_description_{st.session_state.uploader_version}",
             height=220,
             max_chars=10_000,
             placeholder=(

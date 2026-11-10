@@ -12,7 +12,7 @@ def test_limpiar_analisis_restablece_estado(monkeypatch):
         last_fingerprint="abc",
         analyzing=True,
         uploader_version=2,
-        job_description="Vacante",
+        job_description_2="Vacante",
     )
     monkeypatch.setattr(streamlit_ui.st, "session_state", estado)
     streamlit_ui.limpiar_analisis()
@@ -20,4 +20,11 @@ def test_limpiar_analisis_restablece_estado(monkeypatch):
     assert estado["last_fingerprint"] is None
     assert estado["analyzing"] is False
     assert estado["uploader_version"] == 3
-    assert "job_description" not in estado
+    assert "job_description_2" not in estado
+
+
+def test_cargar_ejemplo_vacante_rellena_version_actual(monkeypatch):
+    estado = Estado(uploader_version=4)
+    monkeypatch.setattr(streamlit_ui.st, "session_state", estado)
+    streamlit_ui.cargar_ejemplo_vacante()
+    assert estado["job_description_4"] == streamlit_ui.EJEMPLO_VACANTE
