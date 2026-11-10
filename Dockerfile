@@ -2,12 +2,17 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1
+    PIP_NO_CACHE_DIR=1 \
+    HOME=/home/appuser \
+    STREAMLIT_BROWSER_GATHER_USAGE_STATS=false \
+    STREAMLIT_SERVER_MAX_UPLOAD_SIZE=10
 
 WORKDIR /workspace
 
 RUN addgroup --system appgroup \
-    && adduser --system --ingroup appgroup appuser
+    && adduser --system --ingroup appgroup --home /home/appuser appuser \
+    && mkdir -p /home/appuser/.streamlit \
+    && chown -R appuser:appgroup /home/appuser
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir --requirement requirements.txt

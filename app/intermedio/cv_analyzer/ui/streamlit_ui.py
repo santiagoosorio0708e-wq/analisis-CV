@@ -10,7 +10,7 @@ import streamlit as st
 from models.cv_model import AnalisisCV
 from services.config import ErrorConfiguracionGemini, gemini_esta_configurado
 from services.cv_evaluator import ErrorEvaluacionCV, evaluar_candidato
-from services.pdf_processor import ErrorPDF, extraer_texto_pdf
+from services.pdf_processor import ErrorPDF, extraer_texto_pdf, obtener_limite_archivo_mb
 from ui.presentation import (
     clasificar_ajuste,
     explicar_recomendacion,
@@ -138,6 +138,7 @@ def main() -> None:
         unsafe_allow_html=True,
     )
     inicializar_estado()
+    limite_archivo_mb = obtener_limite_archivo_mb()
 
     titulo, acciones = st.columns([4, 1])
     with titulo:
@@ -169,7 +170,7 @@ def main() -> None:
             "Currículum en PDF",
             type=["pdf"],
             key=f"cv_pdf_{st.session_state.uploader_version}",
-            help="PDF con texto seleccionable. Tamaño predeterminado máximo: 10 MB.",
+            help=f"PDF con texto seleccionable. Tamaño máximo: {limite_archivo_mb} MB.",
         )
         descripcion = st.text_area(
             "Descripción de la vacante",

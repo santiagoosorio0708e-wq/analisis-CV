@@ -8,6 +8,7 @@ from services.pdf_processor import (
     PDFSinTextoError,
     PDFVacioError,
     extraer_texto_pdf,
+    obtener_limite_archivo_mb,
 )
 
 
@@ -72,3 +73,8 @@ def test_pdf_sin_texto_seleccionable():
 def test_pdf_supera_limite():
     with pytest.raises(PDFDemasiadoGrandeError):
         extraer_texto_pdf(crear_pdf_con_texto("Jane Doe"), max_file_size_mb=0.0001)
+
+
+def test_limite_archivo_se_obtiene_del_entorno(monkeypatch):
+    monkeypatch.setenv("CV_MAX_FILE_SIZE_MB", "12")
+    assert obtener_limite_archivo_mb() == 12

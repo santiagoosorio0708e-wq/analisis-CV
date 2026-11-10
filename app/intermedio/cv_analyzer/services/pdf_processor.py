@@ -41,6 +41,11 @@ def _entero_entorno(nombre: str, predeterminado: int) -> int:
     return valor if valor > 0 else predeterminado
 
 
+def obtener_limite_archivo_mb() -> int:
+    """Return the configured upload limit used by validation and the UI."""
+    return _entero_entorno("CV_MAX_FILE_SIZE_MB", DEFAULT_MAX_FILE_SIZE_MB)
+
+
 def _leer_bytes(archivo: bytes | BinaryIO) -> bytes:
     if isinstance(archivo, bytes):
         return archivo
@@ -60,7 +65,7 @@ def extraer_texto_pdf(
     max_text_chars: int | None = None,
 ) -> str:
     """Validate a PDF and extract selectable text from all pages in memory."""
-    limite_mb = max_file_size_mb or _entero_entorno("CV_MAX_FILE_SIZE_MB", DEFAULT_MAX_FILE_SIZE_MB)
+    limite_mb = max_file_size_mb or obtener_limite_archivo_mb()
     limite_texto = max_text_chars or _entero_entorno("CV_MAX_TEXT_CHARS", DEFAULT_MAX_TEXT_CHARS)
     contenido = _leer_bytes(archivo)
 
