@@ -1,0 +1,14 @@
+services:
+  cv-analyzer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash}
+      CV_MAX_FILE_SIZE_MB: ${CV_MAX_FILE_SIZE_MB:-10}
+      CV_MAX_TEXT_CHARS: ${CV_MAX_TEXT_CHARS:-100000}
+    restart: unless-stopped
+
