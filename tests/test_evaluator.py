@@ -1,5 +1,4 @@
 import pytest
-
 from models.cv_model import AnalisisCV
 from services.cv_evaluator import (
     ErrorEvaluacionCV,
@@ -64,4 +63,3 @@ def test_excepcion_de_api_se_convierte_en_error_seguro():
     simulado = EvaluadorSimulado(error=TimeoutError("deadline exceeded"))
     with pytest.raises(ErrorEvaluacionCV, match="tardó demasiado"):
         evaluar_candidato("CV", "Vacante", evaluador=simulado)
-

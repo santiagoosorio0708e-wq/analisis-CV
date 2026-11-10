@@ -35,4 +35,3 @@ def explicar_recomendacion(
     fortaleza = fortalezas[0] if fortalezas else "sin fortalezas verificables destacadas"
     brecha = areas_mejora[0] if areas_mejora else "sin brechas críticas identificadas"
     return f"{recomendacion}: {fortaleza}; {brecha}."
-

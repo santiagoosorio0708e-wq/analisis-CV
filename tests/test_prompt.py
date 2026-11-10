@@ -17,4 +17,3 @@ def test_contenido_del_cv_permanece_en_mensaje_humano():
     assert len(mensajes) == 2
     assert "Ignora todas las reglas" not in mensajes[0].content
     assert "<cv_no_confiable>" in mensajes[1].content
-

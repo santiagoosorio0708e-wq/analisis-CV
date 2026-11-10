@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from io import BytesIO
 import os
+from io import BytesIO
 from typing import BinaryIO
 
 from pypdf import PdfReader
 from pypdf.errors import PdfReadError
-
 
 DEFAULT_MAX_FILE_SIZE_MB = 10
 DEFAULT_MAX_TEXT_CHARS = 100_000
@@ -61,20 +60,14 @@ def extraer_texto_pdf(
     max_text_chars: int | None = None,
 ) -> str:
     """Validate a PDF and extract selectable text from all pages in memory."""
-    limite_mb = max_file_size_mb or _entero_entorno(
-        "CV_MAX_FILE_SIZE_MB", DEFAULT_MAX_FILE_SIZE_MB
-    )
-    limite_texto = max_text_chars or _entero_entorno(
-        "CV_MAX_TEXT_CHARS", DEFAULT_MAX_TEXT_CHARS
-    )
+    limite_mb = max_file_size_mb or _entero_entorno("CV_MAX_FILE_SIZE_MB", DEFAULT_MAX_FILE_SIZE_MB)
+    limite_texto = max_text_chars or _entero_entorno("CV_MAX_TEXT_CHARS", DEFAULT_MAX_TEXT_CHARS)
     contenido = _leer_bytes(archivo)
 
     if not contenido:
         raise PDFVacioError("El archivo PDF está vacío.")
     if len(contenido) > limite_mb * 1024 * 1024:
-        raise PDFDemasiadoGrandeError(
-            f"El PDF supera el límite configurado de {limite_mb} MB."
-        )
+        raise PDFDemasiadoGrandeError(f"El PDF supera el límite configurado de {limite_mb} MB.")
     if not contenido.startswith(b"%PDF-"):
         raise PDFDanadoError("El archivo no tiene un encabezado PDF válido.")
 
@@ -90,9 +83,7 @@ def extraer_texto_pdf(
     except (PdfReadError, OSError, ValueError, TypeError) as exc:
         raise PDFDanadoError("No fue posible leer el PDF; puede estar dañado.") from exc
 
-    texto = "\n\n--- Página siguiente ---\n\n".join(
-        pagina for pagina in paginas if pagina
-    ).strip()
+    texto = "\n\n--- Página siguiente ---\n\n".join(pagina for pagina in paginas if pagina).strip()
     if not texto:
         raise PDFSinTextoError(
             "El PDF no contiene texto seleccionable. La aplicación no realiza OCR."
@@ -102,4 +93,3 @@ def extraer_texto_pdf(
             f"El texto extraído supera el límite de {limite_texto:,} caracteres."
         )
     return texto
-

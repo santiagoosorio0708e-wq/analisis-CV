@@ -7,7 +7,6 @@ import logging
 from pathlib import Path
 
 import streamlit as st
-
 from models.cv_model import AnalisisCV
 from services.config import ErrorConfiguracionGemini, gemini_esta_configurado
 from services.cv_evaluator import ErrorEvaluacionCV, evaluar_candidato
@@ -17,7 +16,6 @@ from ui.presentation import (
     explicar_recomendacion,
     obtener_recomendacion,
 )
-
 
 logger = logging.getLogger(__name__)
 RUTA_ESTILOS = Path(__file__).with_name("styles.css")
@@ -85,9 +83,7 @@ def mostrar_resultado(resultado: AnalisisCV) -> None:
         _mostrar_lista("Áreas de mejora", resultado.areas_mejora, "No identificadas")
 
     st.subheader("Recomendación final")
-    st.info(
-        explicar_recomendacion(porcentaje, resultado.fortalezas, resultado.areas_mejora)
-    )
+    st.info(explicar_recomendacion(porcentaje, resultado.fortalezas, resultado.areas_mejora))
     st.caption(
         f"{recomendacion}. Esta puntuación es orientativa y apoya la revisión humana; "
         "no constituye una decisión automática de contratación."
@@ -196,4 +192,3 @@ def main() -> None:
         _procesar_analisis(archivo, descripcion)
     if st.session_state.analysis_result is not None:
         mostrar_resultado(st.session_state.analysis_result)
-

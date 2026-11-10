@@ -21,4 +21,3 @@ def test_limpiar_analisis_restablece_estado(monkeypatch):
     assert estado["analyzing"] is False
     assert estado["uploader_version"] == 3
     assert "job_description" not in estado
-

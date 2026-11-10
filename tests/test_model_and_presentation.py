@@ -1,7 +1,6 @@
 import pytest
-from pydantic import ValidationError
-
 from models.cv_model import AnalisisCV
+from pydantic import ValidationError
 from ui.presentation import clasificar_ajuste, obtener_recomendacion
 
 
@@ -34,7 +33,14 @@ def test_porcentaje_fuera_de_rango(porcentaje):
 
 @pytest.mark.parametrize(
     ("porcentaje", "esperado"),
-    [(39, "Bajo"), (40, "Regular"), (59, "Regular"), (60, "Bueno"), (79, "Bueno"), (80, "Excelente")],
+    [
+        (39, "Bajo"),
+        (40, "Regular"),
+        (59, "Regular"),
+        (60, "Bueno"),
+        (79, "Bueno"),
+        (80, "Excelente"),
+    ],
 )
 def test_limites_clasificacion(porcentaje, esperado):
     assert clasificar_ajuste(porcentaje) == esperado
@@ -51,4 +57,3 @@ def test_limites_clasificacion(porcentaje, esperado):
 )
 def test_limites_recomendacion(porcentaje, esperado):
     assert obtener_recomendacion(porcentaje) == esperado
-

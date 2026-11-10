@@ -8,12 +8,10 @@ from typing import Any
 from langchain_core.exceptions import OutputParserException
 from langchain_core.runnables import Runnable
 from langchain_google_genai import ChatGoogleGenerativeAI
-from pydantic import ValidationError
-
 from models.cv_model import AnalisisCV
 from prompts.cv_prompts import crear_sistema_prompts
+from pydantic import ValidationError
 from services.config import ConfiguracionGemini, cargar_configuracion_gemini
-
 
 logger = logging.getLogger(__name__)
 
@@ -108,4 +106,3 @@ def evaluar_candidato(
             "Gemini devolvió una respuesta incompatible con el formato esperado."
         )
     return resultado
-

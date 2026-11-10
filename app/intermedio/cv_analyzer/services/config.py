@@ -1,11 +1,10 @@
 """Environment-backed configuration without secret exposure."""
 
-from dataclasses import dataclass
 import os
+from dataclasses import dataclass
 
 from dotenv import load_dotenv
 from pydantic import SecretStr
-
 
 DEFAULT_GEMINI_MODEL = "gemini-3.5-flash"
 PLACEHOLDER_KEYS = {"", "tu_clave_de_gemini", "your_gemini_api_key"}
@@ -42,4 +41,3 @@ def gemini_esta_configurado() -> bool:
     except ErrorConfiguracionGemini:
         return False
     return True
-

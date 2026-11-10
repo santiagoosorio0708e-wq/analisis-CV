@@ -2,7 +2,6 @@ from io import BytesIO
 
 import pytest
 from pypdf import PdfWriter
-
 from services.pdf_processor import (
     PDFDanadoError,
     PDFDemasiadoGrandeError,
@@ -73,4 +72,3 @@ def test_pdf_sin_texto_seleccionable():
 def test_pdf_supera_limite():
     with pytest.raises(PDFDemasiadoGrandeError):
         extraer_texto_pdf(crear_pdf_con_texto("Jane Doe"), max_file_size_mb=0.0001)
-

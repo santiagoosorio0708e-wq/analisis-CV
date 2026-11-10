@@ -28,4 +28,3 @@ class AnalisisCV(BaseModel):
         if any(not valor for valor in limpios):
             raise ValueError("los elementos no pueden estar vacíos")
         return limpios
-
