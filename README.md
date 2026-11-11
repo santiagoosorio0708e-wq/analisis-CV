@@ -243,10 +243,10 @@ CV_MAX_TEXT_CHARS=100000
 3. **Iniciar la aplicación:**
    ```bash
    cd app/intermedio/cv_analyzer
-   streamlit run app.py --server.port=8501
+   streamlit run app.py --server.port=8502
    ```
 
-4. **Acceder a la aplicación:** Abre tu navegador web en **`http://localhost:8501`**.
+4. **Acceder a la aplicación:** Abre tu navegador web en **`http://localhost:8502`**.
 
 ---
 
@@ -271,7 +271,7 @@ docker compose logs -f cv-analyzer
 docker compose down
 ```
 
-Abre **`http://localhost:8501`** para interactuar con la plataforma.
+Abre **`http://localhost:8502`** para interactuar con la plataforma.
 
 [Volver al inicio](#-analizador-de-cv-con-ia-cv-analyzer)
 

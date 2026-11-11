@@ -293,8 +293,8 @@
         <span class="dot" id="status-dot"></span>
         <span id="status-text">Buscando Streamlit...</span>
       </div>
-      <a href="http://localhost:8501" target="_blank" rel="noopener noreferrer" class="btn btn-primary" id="open-btn">
-        Abrir en Puerto 8501 ↗
+      <a href="http://127.0.0.1:8502" target="_blank" rel="noopener noreferrer" class="btn btn-primary" id="open-btn">
+        Abrir en Puerto 8502 ↗
       </a>
       <button class="btn btn-outline" onclick="verificarServidor()">
         Reintentar
@@ -309,7 +309,7 @@
         <div class="icon-box">🤖</div>
         <h1>Conexión con CV Analyzer</h1>
         <p class="subtitle">
-          Has abierto el proyecto mediante <b>Live Server</b> (puerto 5500). Para que el analizador de CV funcione con IA (Google Gemini), el servidor backend de Python/Streamlit debe estar en ejecución.
+          Has abierto el proyecto mediante <b>Live Server</b> (puerto 5500). Para que el analizador de CV funcione con IA (Google Gemini), el servidor backend de Python/Streamlit debe estar en ejecución en el puerto <b>8502</b>.
         </p>
 
         <div class="steps-container">
@@ -328,14 +328,14 @@
             <div class="step-number">2</div>
             <div class="step-text">
               <h4>Carga automática instantánea</h4>
-              <p>No necesitas recargar esta pestaña. En cuanto el servidor inicie en el puerto 8501, <b>esta pantalla cargará el analizador automáticamente</b> aquí dentro.</p>
+              <p>No necesitas recargar esta pestaña. En cuanto el servidor inicie en el puerto 8502, <b>esta pantalla cargará el analizador automáticamente</b> aquí dentro.</p>
             </div>
           </div>
         </div>
 
         <div class="card-actions">
-          <a href="http://localhost:8501" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-            🚀 Abrir http://localhost:8501
+          <a href="http://127.0.0.1:8502" id="card-open-link" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            🚀 Abrir http://127.0.0.1:8502
           </a>
           <button class="btn btn-outline" onclick="verificarServidor()">
             Comprobar Estado Ahora
@@ -344,7 +344,7 @@
 
         <div class="polling-hint">
           <div class="spinner"></div>
-          <span>Buscando automáticamente Streamlit en http://localhost:8501 ...</span>
+          <span id="hint-text">Buscando automáticamente Streamlit en http://127.0.0.1:8502 ...</span>
         </div>
       </div>
     </section>
@@ -354,44 +354,63 @@
   </main>
 
   <script>
-    const STREAMLIT_URL = "http://localhost:8501";
-    const HEALTH_URL = "http://localhost:8501/_stcore/health";
-    
+    // Puertos a verificar: prioritario 8502, fallback 8501
+    const PUERTOS = [8502, 8501];
+    let puertoActivo = null;
+
     const offlineView = document.getElementById("offline-view");
     const appFrame = document.getElementById("app-frame");
     const statusDot = document.getElementById("status-dot");
     const statusText = document.getElementById("status-text");
+    const openBtn = document.getElementById("open-btn");
+    const cardOpenLink = document.getElementById("card-open-link");
+    const hintText = document.getElementById("hint-text");
 
     let isOnline = false;
 
-    async function verificarServidor() {
+    async function testPort(port) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1200);
-
-        const response = await fetch(HEALTH_URL, {
+        const timeoutId = setTimeout(() => controller.abort(), 900);
+        await fetch(`http://127.0.0.1:${port}/_stcore/health`, {
           method: "GET",
           mode: "no-cors",
           signal: controller.signal
         });
         clearTimeout(timeoutId);
-
-        // Si fetch resuelve sin lanzar error, el servidor está respondiendo
-        marcarOnline();
-      } catch (err) {
-        marcarOffline();
+        return true;
+      } catch (e) {
+        return false;
       }
     }
 
-    function marcarOnline() {
+    async function verificarServidor() {
+      for (const port of PUERTOS) {
+        const ok = await testPort(port);
+        if (ok) {
+          marcarOnline(port);
+          return;
+        }
+      }
+      marcarOffline();
+    }
+
+    function marcarOnline(port) {
+      puertoActivo = port;
+      const url = `http://127.0.0.1:${port}`;
+      openBtn.href = url;
+      openBtn.textContent = `Abrir en Puerto ${port} ↗`;
+      cardOpenLink.href = url;
+      cardOpenLink.textContent = `🚀 Abrir ${url}`;
+
       if (!isOnline) {
         isOnline = true;
         statusDot.classList.add("online");
-        statusText.textContent = "Streamlit Activo (8501)";
+        statusText.textContent = `Streamlit Activo (${port})`;
         offlineView.style.display = "none";
         appFrame.style.display = "block";
-        if (appFrame.src === "about:blank" || !appFrame.src.includes("8501")) {
-          appFrame.src = STREAMLIT_URL;
+        if (appFrame.src === "about:blank" || !appFrame.src.includes(`:${port}`)) {
+          appFrame.src = url;
         }
       }
     }
@@ -407,6 +426,7 @@
         statusDot.classList.remove("online");
         statusText.textContent = "Streamlit Detenido";
       }
+      hintText.textContent = "Buscando automáticamente Streamlit en http://127.0.0.1:8502 ...";
     }
 
     // Comprobar periódicamente cada 1.8 segundos

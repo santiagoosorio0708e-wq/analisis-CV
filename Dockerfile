@@ -21,10 +21,9 @@ COPY --chown=appuser:appgroup . .
 WORKDIR /workspace/app/intermedio/cv_analyzer
 USER appuser
 
-EXPOSE 8501
+EXPOSE 8502
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health', timeout=3)"
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8502/_stcore/health', timeout=3)"
 
-CMD ["streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.port=8501"]
-
+CMD ["streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.port=8502"]
